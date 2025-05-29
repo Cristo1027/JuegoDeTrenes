@@ -3,11 +3,15 @@
 
 int main() {
     Juego juego;
-    int numJugadores = 2;
 
-    std::cout << "Iniciando Juego de Trenes con " << numJugadores << " jugadores..." << std::endl;
-    juego.inicializar(numJugadores);
+    std::cout << "Iniciando Juego de Trenes..." << std::endl;
+    juego.inicializar(2); // 2 jugadores para pruebas
+
+    std::cout << "\nManos de los jugadores:\n";
     juego.mostrarManos();
+
+    std::cout << "\nTrayectos disponibles:\n";
+    juego.mostrarTrayectos();
 
     return 0;
 }
