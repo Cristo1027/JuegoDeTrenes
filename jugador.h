@@ -11,7 +11,17 @@ private:
 
 public:
     Jugador(int idJugador);
+
     void agregarCarta(const Carta& carta);
     void mostrarMano() const;
+
     int getId() const;
+    int getPuntos() const;
+    int getVagones() const;
+
+    int contarCartasColor(Color color) const;
+    void removerCartasColor(Color color, int cantidad);
+
+    void reducirVagones(int cantidad);
+    void sumarPuntos(int cantidad);
 };

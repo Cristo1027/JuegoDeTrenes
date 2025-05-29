@@ -11,9 +11,15 @@ private:
     std::vector<Carta> descarte;
     Tablero tablero;
     int turnoActual;
+    bool juegoTerminado;
+
+    void barajarSiEsNecesario();
 
 public:
     void inicializar(int cantidadJugadores);
     void mostrarManos() const;
     void mostrarTrayectos() const;
+    void jugarTurno();
+    bool estaTerminado() const;
+    void mostrarGanador() const;
 };

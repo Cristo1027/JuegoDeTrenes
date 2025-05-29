@@ -18,3 +18,41 @@ void Jugador::mostrarMano() const {
 int Jugador::getId() const {
     return id;
 }
+
+int Jugador::getPuntos() const {
+    return puntos;
+}
+
+int Jugador::getVagones() const {
+    return vagones;
+}
+
+int Jugador::contarCartasColor(Color color) const {
+    int total = 0;
+    for (const auto& carta : mano) {
+        if (carta.getColor() == color) {
+            total++;
+        }
+    }
+    return total;
+}
+
+void Jugador::removerCartasColor(Color color, int cantidad) {
+    int removidos = 0;
+    for (auto it = mano.begin(); it != mano.end() && removidos < cantidad;) {
+        if (it->getColor() == color) {
+            it = mano.erase(it);
+            removidos++;
+        } else {
+            ++it;
+        }
+    }
+}
+
+void Jugador::reducirVagones(int cantidad) {
+    vagones -= cantidad;
+}
+
+void Jugador::sumarPuntos(int cantidad) {
+    puntos += cantidad;
+}

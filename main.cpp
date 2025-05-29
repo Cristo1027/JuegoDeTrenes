@@ -3,15 +3,14 @@
 
 int main() {
     Juego juego;
+    juego.inicializar(2);
 
-    std::cout << "Iniciando Juego de Trenes..." << std::endl;
-    juego.inicializar(2); // 2 jugadores para pruebas
+    while (!juego.estaTerminado()) {
+        juego.jugarTurno();
+    }
 
-    std::cout << "\nManos de los jugadores:\n";
-    juego.mostrarManos();
-
-    std::cout << "\nTrayectos disponibles:\n";
-    juego.mostrarTrayectos();
+    std::cout << "\nJuego terminado.\n";
+    juego.mostrarGanador();
 
     return 0;
 }
