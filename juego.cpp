@@ -122,8 +122,8 @@ void Juego::jugarTurno() {
     }
 
     // Verificar fin de juego
-    if (jugador.getVagones() <= 2) {
-        std::cout << "⚠️  Jugador " << jugador.getId() << " tiene 2 o menos vagones.\n";
+    if (jugador.getVagones() <= 5) {
+        std::cout << "⚠️  Jugador " << jugador.getId() << " tiene 5 o menos vagones.\n";
         juegoTerminado = true;
     }
 
@@ -136,14 +136,26 @@ bool Juego::estaTerminado() const {
 }
 
 void Juego::mostrarGanador() const {
+    std::cout << "\n🏁 RESULTADOS FINALES\n";
+    std::cout << "--------------------------\n";
+
     int maxPuntos = -1;
     int ganadorId = -1;
+
     for (const auto& jugador : jugadores) {
-        std::cout << "Jugador " << jugador.getId() << ": " << jugador.getPuntos() << " puntos.\n";
+        std::cout << "Jugador " << jugador.getId()
+                  << ": 🧮 " << jugador.getPuntos()
+                  << " puntos\n";
+
         if (jugador.getPuntos() > maxPuntos) {
             maxPuntos = jugador.getPuntos();
             ganadorId = jugador.getId();
         }
     }
-    std::cout << "\n🏆 El ganador es el Jugador " << ganadorId << " con " << maxPuntos << " puntos!\n";
+
+    std::cout << "\n🏆 El ganador es el Jugador "
+              << ganadorId << " con "
+              << maxPuntos << " puntos 🎉\n";
+    std::cout << "--------------------------\n";
 }
+
