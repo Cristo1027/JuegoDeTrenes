@@ -2,6 +2,7 @@
 #include <ctime>
 #include <algorithm>
 #include <iostream>
+#include <random>
 
 void Juego::inicializar(int cantidadJugadores) {
     for (int i = 0; i < 12; ++i) {
@@ -10,12 +11,11 @@ void Juego::inicializar(int cantidadJugadores) {
         }
     }
 
-    srand(static_cast<unsigned>(time(nullptr)));
-    std::random_shuffle(baraja.begin(), baraja.end());
+    std::shuffle(baraja.begin(), baraja.end(), std::default_random_engine(static_cast<unsigned>(time(nullptr))));
 
     for (int i = 1; i <= cantidadJugadores; ++i) {
         jugadores.emplace_back(i);
-        for (int j = 0; j < 5; ++j) {
+        for (int j = 0; j < 6; ++j) {
             jugadores.back().agregarCarta(baraja.back());
             baraja.pop_back();
         }
@@ -24,6 +24,15 @@ void Juego::inicializar(int cantidadJugadores) {
     tablero.cargarTrayectos();
     turnoActual = 0;
     juegoTerminado = false;
+}
+
+void Juego::barajarSiEsNecesario() {
+    if (baraja.empty() && !descarte.empty()) {
+        std::cout << "(Barajando descarte...)\n";
+        baraja = descarte;
+        descarte.clear();
+        std::shuffle(baraja.begin(), baraja.end(), std::default_random_engine(static_cast<unsigned>(time(nullptr))));
+    }
 }
 
 void Juego::mostrarManos() const {
@@ -38,53 +47,55 @@ void Juego::mostrarTrayectos() const {
 
 void Juego::jugarTurno() {
     Jugador& jugador = jugadores[turnoActual];
-    std::cout << "\nTurno del jugador " << jugador.getId() << ":\n";
+    std::cout << "\n🕹️  Turno del Jugador " << jugador.getId() << ":\n";
     jugador.mostrarMano();
 
-    std::cout << "Elige acción:\n1. Robar 2 cartas\n2. Realizar un trayecto\n> ";
+    std::cout << "\n¿Qué acción deseas realizar?\n";
+    std::cout << "1. Robar 2 cartas\n";
+    std::cout << "2. Realizar un trayecto\n> ";
     int opcion;
     std::cin >> opcion;
 
     if (opcion == 1) {
-        for (int i = 0; i < 2; ++i) {
-            barajarSiEsNecesario();
-            if (!baraja.empty()) {
-                jugador.agregarCarta(baraja.back());
-                baraja.pop_back();
-            }
+        barajarSiEsNecesario();
+        for (int i = 0; i < 2 && !baraja.empty(); ++i) {
+            jugador.agregarCarta(baraja.back());
+            baraja.pop_back();
         }
     } else if (opcion == 2) {
         mostrarTrayectos();
         std::string origen, destino;
-        std::cout << "Origen: "; std::cin >> origen;
-        std::cout << "Destino: "; std::cin >> destino;
+        std::cout << "Elige trayecto - Ciudad origen: ";
+        std::cin >> origen;
+        std::cout << "Ciudad destino: ";
+        std::cin >> destino;
 
         Trayecto* trayecto = tablero.buscarTrayecto(origen, destino);
-        if (trayecto && !trayecto->estaOcupado()) {
-            // Verificar si tiene suficientes cartas del color requerido
-            Color requerido = trayecto->getColor();
-            int necesarios = trayecto->getLongitud();
-            int disponibles = jugador.contarCartasColor(requerido);
-
-            if (disponibles >= necesarios) {
-                jugador.removerCartasColor(requerido, necesarios);
-                trayecto->ocupar(jugador.getId());
-                jugador.sumarPuntos(trayecto->calcularPuntos());
-                jugador.reducirVagones(trayecto->getLongitud());
-
-                std::cout << "Trayecto completado con éxito.\n";
-            } else {
-                std::cout << "No tienes suficientes cartas del color requerido.\n";
-            }
+        if (!trayecto) {
+            std::cout << "Trayecto no encontrado.\n";
+        } else if (trayecto->estaOcupado()) {
+            std::cout << "Este trayecto ya está ocupado.\n";
         } else {
-            std::cout << "Trayecto inválido u ocupado.\n";
+            Color requerido = trayecto->getColor();
+            int longitud = trayecto->getLongitud();
+
+            if (jugador.contarCartasColor(requerido) >= longitud && jugador.getVagones() >= longitud) {
+                std::vector<Carta> usadas = jugador.removerCartasColorYObtener(requerido, longitud);
+                descarte.insert(descarte.end(), usadas.begin(), usadas.end());
+
+                jugador.reducirVagones(longitud);
+                jugador.sumarPuntos(trayecto->calcularPuntos());
+                trayecto->ocupar(jugador.getId());
+                std::cout << "✅ Trayecto completado con éxito.\n";
+            } else {
+                std::cout << "❌ No tienes suficientes cartas o vagones.\n";
+            }
         }
     } else {
         std::cout << "Opción inválida.\n";
     }
 
-    // Condición de fin
-    if (jugador.getVagones() < 5) {
+    if (jugador.getVagones() <= 2) {
         juegoTerminado = true;
     }
 
@@ -97,24 +108,13 @@ bool Juego::estaTerminado() const {
 
 void Juego::mostrarGanador() const {
     int maxPuntos = -1;
-    int ganador = -1;
-
-    for (const auto& j : jugadores) {
-        std::cout << "Jugador " << j.getId() << ": " << j.getPuntos() << " puntos.\n";
-        if (j.getPuntos() > maxPuntos) {
-            maxPuntos = j.getPuntos();
-            ganador = j.getId();
+    int ganadorId = -1;
+    for (const auto& jugador : jugadores) {
+        std::cout << "Jugador " << jugador.getId() << ": " << jugador.getPuntos() << " puntos.\n";
+        if (jugador.getPuntos() > maxPuntos) {
+            maxPuntos = jugador.getPuntos();
+            ganadorId = jugador.getId();
         }
     }
-
-    std::cout << "🏆 Ganador: Jugador " << ganador << " con " << maxPuntos << " puntos!\n";
-}
-
-void Juego::barajarSiEsNecesario() {
-    if (baraja.empty() && !descarte.empty()) {
-        std::cout << "(Barajando descarte...)\n";
-        baraja = descarte;
-        descarte.clear();
-        std::random_shuffle(baraja.begin(), baraja.end());
-    }
+    std::cout << "🏆 El ganador es el Jugador " << ganadorId << " con " << maxPuntos << " puntos!\n";
 }

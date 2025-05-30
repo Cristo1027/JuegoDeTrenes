@@ -8,11 +8,11 @@ void Jugador::agregarCarta(const Carta& carta) {
 }
 
 void Jugador::mostrarMano() const {
-    std::cout << "Jugador " << id << " tiene: ";
+    std::cout << "Jugador " << id << ": [ ";
     for (const Carta& carta : mano) {
         std::cout << carta.getNombre() << " ";
     }
-    std::cout << std::endl;
+    std::cout << "]\n";
 }
 
 int Jugador::getId() const {
@@ -27,12 +27,14 @@ int Jugador::getVagones() const {
     return vagones;
 }
 
+int Jugador::getCantidadCartas() const {
+    return mano.size();
+}
+
 int Jugador::contarCartasColor(Color color) const {
     int total = 0;
     for (const auto& carta : mano) {
-        if (carta.getColor() == color) {
-            total++;
-        }
+        if (carta.getColor() == color) total++;
     }
     return total;
 }
@@ -47,6 +49,21 @@ void Jugador::removerCartasColor(Color color, int cantidad) {
             ++it;
         }
     }
+}
+
+std::vector<Carta> Jugador::removerCartasColorYObtener(Color color, int cantidad) {
+    std::vector<Carta> resultado;
+    int removidos = 0;
+    for (auto it = mano.begin(); it != mano.end() && removidos < cantidad;) {
+        if (it->getColor() == color) {
+            resultado.push_back(*it);
+            it = mano.erase(it);
+            removidos++;
+        } else {
+            ++it;
+        }
+    }
+    return resultado;
 }
 
 void Jugador::reducirVagones(int cantidad) {

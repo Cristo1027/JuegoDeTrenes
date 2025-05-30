@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
-#include "Carta.h"
+#include <iostream>
+#include "Carta.h" // Asegura que se incluya la definición de Color
 
 class Trayecto {
 private:
@@ -22,3 +23,16 @@ public:
     int calcularPuntos() const;
     void ocupar(int jugadorId);
 };
+
+inline std::ostream& operator<<(std::ostream& os, const Color& color) {
+    switch (color) {
+        case Color::ROJO:    os << "Rojo"; break;
+        case Color::AZUL:    os << "Azul"; break;
+        case Color::VERDE:   os << "Verde"; break;
+        case Color::MORADO:  os << "Morado"; break;
+        case Color::CAFE:    os << "Café"; break;
+        case Color::NARANJA: os << "Naranja"; break;
+        default:             os << "Desconocido"; break;
+    }
+    return os;
+}
