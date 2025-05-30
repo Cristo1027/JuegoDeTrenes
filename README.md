@@ -42,27 +42,4 @@ Este proyecto está bajo la Licencia MIT. Consulta el archivo LICENSE para más 
 Run
 Copy code
 
-### **2. Crear el README.md en tu Repositorio**
 
-- Abre la terminal y navega a tu carpeta del proyecto.
-- Crea el archivo `README.md`:
-  ```bash
-  touch README.md
-Abre el archivo en un editor de texto y copia el contenido anterior.
-Guarda y cierra el archivo.
-3. Hacer Commit y Subir el README.md
-Agrega el archivo README.md al repositorio:
-bash
-Run
-Copy code
-git add README.md
-Realiza un commit:
-bash
-Run
-Copy code
-git commit -m "Add README.md"
-Sube los cambios a GitHub:
-bash
-Run
-Copy code
-git push origin master
