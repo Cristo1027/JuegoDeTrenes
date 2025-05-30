@@ -3,7 +3,7 @@
 
 int main() {
     Juego juego;
-    juego.inicializar(2);
+    juego.inicializar(4);
 
     while (!juego.estaTerminado()) {
         juego.jugarTurno();
