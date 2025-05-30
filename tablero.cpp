@@ -1,5 +1,7 @@
 #include "Tablero.h"
+#include "utilidades.h" // 👉 Necesario para los colores
 #include <iostream>
+#include <iomanip>
 
 void Tablero::cargarTrayectos() {
     trayectos.emplace_back("A", "B", Color::ROJO, 4);
@@ -22,17 +24,25 @@ void Tablero::cargarTrayectos() {
     trayectos.emplace_back("O", "P", Color::NARANJA, 3);
     trayectos.emplace_back("F", "H", Color::NARANJA, 2);
     trayectos.emplace_back("K", "L", Color::NARANJA, 3);
-    
 }
 
 void Tablero::mostrarTrayectos() const {
+    std::cout << "\n🗺️  MAPA DE TRAYECTOS DISPONIBLES:\n";
+    std::cout << "-----------------------------------------\n";
+
     for (const auto& t : trayectos) {
-        std::cout << t.getOrigen() << " - " << t.getDestino()
-                  << " | Color: " << t.getColor()
-                  << " | Longitud: " << t.getLongitud()
-                  << " | Ocupado por: " << (t.estaOcupado() ? std::to_string(t.getOcupadoPor()) : "Libre")
-                  << std::endl;
+        std::string color = obtenerColorANSI(t.getColor());
+        std::string estado = t.estaOcupado()
+            ? "Ocupado por J" + std::to_string(t.getOcupadoPor())
+            : "Libre";
+
+        std::cout << std::setw(2) << t.getOrigen()
+                  << " —" << t.getLongitud() << color << "— "
+                  << std::setw(2) << t.getDestino()
+                  << " | " << estado << "\n";
     }
+
+    std::cout << "-----------------------------------------\n";
 }
 
 std::vector<Trayecto>& Tablero::getTrayectos() {

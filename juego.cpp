@@ -50,11 +50,16 @@ void Juego::mostrarTrayectos() const {
 
 void Juego::jugarTurno() {
     Jugador& jugador = jugadores[turnoActual];
+    
     std::cout << "\n============================================\n";
     std::cout << "🎮 TURNO DEL JUGADOR " << jugador.getId() << "\n";
-    std::cout << "Cartas en mano: ";
+    std::cout << "🧳 Vagones: " << jugador.getVagones()
+            << "   🧮 Puntos: " << jugador.getPuntos()
+            << "   🃏 Cartas: " << jugador.getCantidadCartas() << "\n";
+    std::cout << "============================================\n";
+
     jugador.mostrarMano();
-    std::cout << "Vagones: " << jugador.getVagones() << " | Puntos: " << jugador.getPuntos() << "\n";
+
 
     std::cout << "\n¿Qué acción deseas realizar?\n";
     std::cout << "1. Robar 2 cartas\n";

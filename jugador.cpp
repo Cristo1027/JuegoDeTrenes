@@ -1,4 +1,5 @@
 #include "Jugador.h"
+#include "utilidades.h" 
 #include <iostream>
 
 Jugador::Jugador(int idJugador) : id(idJugador), vagones(18), puntos(0) {}
@@ -10,7 +11,7 @@ void Jugador::agregarCarta(const Carta& carta) {
 void Jugador::mostrarMano() const {
     std::cout << "Jugador " << id << ": [ ";
     for (const Carta& carta : mano) {
-        std::cout << carta.getNombre() << " ";
+        std::cout << obtenerColorANSI(carta.getColor()) << " ";
     }
     std::cout << "]\n";
 }
